@@ -1,0 +1,33 @@
+<div class="card" style="width: 20rem; height: auto; margin: auto">
+  <img
+    class="card-img-top"
+    src="{{ shoppingItem.imagePath }}"
+    alt="Card image cap"
+    style="padding-top: 1rem; padding-left: 1rem; padding-right: 1rem"
+    height="150"
+  />
+  <div class="card-body">
+    <h5 class="card-title text-center">
+      {{ shoppingItem.name }} - ${{ shoppingItem.price }}
+    </h5>
+    <p class="card-text">
+      {{ shoppingItem.description }}
+    </p>
+    <hr>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <button class="btn btn-primary" (click)="onAddItemToCart()" *ngIf="!cartMode">Add to Cart</button>
+          <button class="btn btn-danger" (click)="onAddItemToCart()" *ngIf="cartMode">Remove from Cart</button>
+        </div>
+        <div class="col-md-6 text-center">
+          <label class="d-inline-block" for="item_quantity">Quantity</label>
+          <select *ngIf="shoppingItem.quantity !== 0" name="item_quantity" class="custom-select" (change)="onSelectQuantity($event)" [(ngModel)]="selectedQuantity">
+            <option *ngFor="let quant of itemQuantityOptions" [value]="quant.value">{{quant.name}}</option>
+          </select>
+          <p *ngIf="shoppingItem.quantity === 0" style="color: red;">SOLD OUT</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

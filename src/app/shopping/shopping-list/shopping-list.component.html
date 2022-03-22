@@ -1,0 +1,13 @@
+<div class="container">
+  <div class="row pr-5">
+    <div class="col-md-12">
+      <h1 class="display-1 text-center">{{ category }}</h1>
+    </div>
+  </div>
+  <hr />
+  <div class="row">
+    <div class="col-md-6 pt-3" *ngFor="let item of items">
+      <app-shopping-item-card [shoppingItem]="item" [cartMode]="false"></app-shopping-item-card>
+    </div>
+  </div>
+</div>
