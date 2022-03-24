@@ -28,4 +28,23 @@ export class CheckoutComponent implements OnInit {
   ngOnDestroy() {
     this.cartItemsSubscription.unsubscribe();
   }
+
+  clearCart() {
+    this.cartService.clearCart();
+  }
+
+  checkout() {
+    // calculation
+    let itemizedCosts = []
+    let totalCost = 0;
+
+    this.cartItems.forEach((item: ShoppingItem) => {
+      let tax = 1 + item.tax
+      let currItemCost = (item.price * item.quantity) * tax;
+      totalCost += currItemCost;
+      itemizedCosts.push({ name: item.name, quantity: item.quantity, cost: currItemCost })
+    })
+
+    console.log(totalCost)
+  }
 }

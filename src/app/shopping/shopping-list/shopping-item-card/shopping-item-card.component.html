@@ -8,17 +8,24 @@
   />
   <div class="card-body">
     <h5 class="card-title text-center">
-      {{ shoppingItem.name }} - ${{ shoppingItem.price }}
+      {{ shoppingItem.name }}
     </h5>
     <p class="card-text">
-      {{ shoppingItem.description }}
+      <strong>Item Description:</strong> {{ shoppingItem.description }}
+    </p>
+    <hr>
+    <p class="card-text">
+      <strong>Price:</strong> ${{shoppingItem.price}}
+    </p>
+    <p class="card-text">
+      <strong>Tax:</strong> {{shoppingItem.tax * 100}}%
     </p>
     <hr>
     <div class="container">
       <div class="row">
         <div class="col-md-6">
-          <button class="btn btn-primary" (click)="onAddItemToCart()" *ngIf="!cartMode">Add to Cart</button>
-          <button class="btn btn-danger" (click)="onAddItemToCart()" *ngIf="cartMode">Remove from Cart</button>
+          <button class="btn btn-primary" (click)="onAddOrRemove()" *ngIf="!cartMode">Add to Cart</button>
+          <button class="btn btn-danger" (click)="onAddOrRemove()" *ngIf="cartMode">Remove from Cart</button>
         </div>
         <div class="col-md-6 text-center">
           <label class="d-inline-block" for="item_quantity">Quantity</label>

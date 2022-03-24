@@ -6,5 +6,7 @@ export class ShoppingItem {
     public price: number,
     public tax: number,
     public quantity: number,
+    public category: string,
+    public id: string,
   ) { }
 }

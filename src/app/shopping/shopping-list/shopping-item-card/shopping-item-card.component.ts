@@ -21,16 +21,23 @@ export class ShoppingItemCardComponent implements OnInit {
    * 1. Use Cart Service to add the item to the cart
    * 2. Use the shopping list service to update the quantity of the shopping item
    */
-  onAddItemToCart() {
-    // this.cartService.addItemToCart(this.shoppingItem);
-    let cartItem = { ...this.shoppingItem, quantity: this.selectedQuantity }
+  onAddOrRemove() {
+
+    // make new shopping item with selected quantity to be added/removed
+    let newItem = { ...this.shoppingItem, quantity: this.selectedQuantity }
+    // update quantity remaining for item
     let newQuantity = this.shoppingItem.quantity - this.selectedQuantity;
     this.itemQuantityOptions = []
     for (let i = 1; i < newQuantity + 1; i++) {
-      this.itemQuantityOptions.push({ name: i.toString(), value: i });
+      this.itemQuantityOptions.push({ name: i.toString(), value: i })
     }
-    this.cartService.addItemToCart(cartItem)
 
+    // if in shopping mode, add to cart
+    if (!this.cartMode) {
+      this.cartService.addItemToCart(newItem);
+    } else { // if in cart mode, remove from cart
+      this.cartService.removeItemFromCart(newItem);
+    }
   }
 
   onSelectQuantity(event: Event) {

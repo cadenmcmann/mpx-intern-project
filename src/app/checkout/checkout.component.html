@@ -6,8 +6,22 @@
   </div>
   <hr>
   <div class="row">
-    <div class="col-md-12" *ngFor="let item of cartItems">
+    <div class="col-md-6 pt-3" *ngFor="let item of cartItems">
       <app-shopping-item-card [shoppingItem]="item" [cartMode]="true"></app-shopping-item-card>
+    </div>
+  </div>
+  <hr *ngIf="cartItems.length !== 0">
+  <div class="row pb-5" *ngIf="cartItems.length !== 0">
+    <div class="col-md-10 text-md-right">
+      <button class="btn btn-danger" (click)="clearCart()">Clear Cart</button>
+    </div>
+    <div class="col-md-2 text-md-right">
+      <button class="btn btn-primary" (click)="checkout()">Checkout</button>
+    </div>
+  </div>
+  <div class="row" *ngIf="cartItems.length === 0">
+    <div class="col-md text-center">
+      <h3>Looks like your cart is empty. Click the shopping tab to go buy some items!</h3>
     </div>
   </div>
 </div>
