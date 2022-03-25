@@ -14,7 +14,10 @@ export class ShoppingItemCardComponent implements OnInit {
   itemQuantityOptions: any[] = [];
   @Input() cartMode: boolean;
   selectedQuantity: number = 0;
-  constructor(private cartService: CartService, private shoppingService: ShoppingItemsService) { }
+  constructor(
+    private cartService: CartService,
+    private shoppingService: ShoppingItemsService
+  ) {}
 
   /**
    * Need to...
@@ -22,20 +25,20 @@ export class ShoppingItemCardComponent implements OnInit {
    * 2. Use the shopping list service to update the quantity of the shopping item
    */
   onAddOrRemove() {
-
     // make new shopping item with selected quantity to be added/removed
-    let newItem = { ...this.shoppingItem, quantity: this.selectedQuantity }
+    let newItem = { ...this.shoppingItem, quantity: this.selectedQuantity };
     // update quantity remaining for item
-    let newQuantity = this.shoppingItem.quantity - this.selectedQuantity;
-    this.itemQuantityOptions = []
-    for (let i = 1; i < newQuantity + 1; i++) {
-      this.itemQuantityOptions.push({ name: i.toString(), value: i })
+    let remainingQuantity = this.shoppingItem.quantity - this.selectedQuantity;
+    this.itemQuantityOptions = [];
+    for (let i = 1; i < remainingQuantity + 1; i++) {
+      this.itemQuantityOptions.push({ name: i.toString(), value: i });
     }
 
     // if in shopping mode, add to cart
     if (!this.cartMode) {
       this.cartService.addItemToCart(newItem);
-    } else { // if in cart mode, remove from cart
+    } else {
+      // if in cart mode, remove from cart
       this.cartService.removeItemFromCart(newItem);
     }
   }

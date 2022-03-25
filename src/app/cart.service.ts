@@ -1,18 +1,17 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ShoppingItem } from './shopping/shoppingItem.model';
 import { ShoppingItemsService } from './shopping-items.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CartService {
-
   cartInventoryChanged = new Subject<ShoppingItem[]>();
 
   private cartInventory: ShoppingItem[] = [];
 
-  constructor(private shoppingService: ShoppingItemsService) { }
+  constructor(private shoppingService: ShoppingItemsService) {}
 
   setCartInventory(cartInv: ShoppingItem[]) {
     this.cartInventory = cartInv;
@@ -32,43 +31,56 @@ export class CartService {
     }
     // If item is in cart, update its quantity
     else {
-      let currentCartInventory = this.cartInventory.slice()
+      let currentCartInventory = this.cartInventory.slice();
       currentCartInventory.forEach((cartItem: ShoppingItem) => {
         if (cartItem.name === addedItem.name) {
           cartItem.quantity += addedItemQty;
         }
-      })
+      });
       this.cartInventory = currentCartInventory;
       this.cartInventoryChanged.next(this.cartInventory.slice());
     }
 
+    localStorage.setItem('cartData', JSON.stringify(this.cartInventory));
+
     // Call shopping-items service to update quantity of item remaining on shopping page
-    // this.shoppingService.updateItemQuantity(addedItem, addedItemQty);
+    this.shoppingService.updateItemQuantity(addedItem, addedItemQty);
   }
 
   removeItemFromCart(removedItem: ShoppingItem) {
     // First, update cart inventory list
     let removeAll = false;
     let currentCart = this.cartInventory.slice();
-    let newCart: ShoppingItem[] = []
+    let newCart: ShoppingItem[] = [];
     currentCart.forEach((item: ShoppingItem) => {
       // Case 1: Removing all of the item from the cart
-      if (item.name === removedItem.name && item.quantity === removedItem.quantity) {
+      if (
+        item.name === removedItem.name &&
+        item.quantity === removedItem.quantity
+      ) {
         removeAll = true;
-        newCart = currentCart.filter((item: ShoppingItem) => (item.name !== removedItem.name))
+        newCart = currentCart.filter(
+          (item: ShoppingItem) => item.name !== removedItem.name
+        );
       }
       // Case 2: Removing some of the item from the cart
-      if (item.name === removedItem.name && item.quantity !== removedItem.quantity) {
+      if (
+        item.name === removedItem.name &&
+        item.quantity !== removedItem.quantity
+      ) {
         item.quantity -= removedItem.quantity;
       }
-    })
+    });
     if (removeAll) {
       this.setCartInventory(newCart);
     } else {
       this.setCartInventory(currentCart);
     }
+
+    localStorage.setItem('cartData', JSON.stringify(this.cartInventory));
+
     // Now, update shopping list
-    // this.shoppingService.updateItemQuantity(removedItem, -(removedItem.quantity));
+    this.shoppingService.updateItemQuantity(removedItem, -removedItem.quantity);
   }
 
   clearCart() {
@@ -94,7 +106,7 @@ export class CartService {
       if (cartItem.name === item.name) {
         qty = cartItem.quantity;
       }
-    })
+    });
     return qty;
   }
 }

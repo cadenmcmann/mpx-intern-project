@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { AuthService } from './auth.service';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { AuthResponseData, AuthService } from './auth.service';
 
 @Component({
   selector: 'app-auth',
@@ -9,8 +11,9 @@ import { AuthService } from './auth.service';
 })
 export class AuthComponent implements OnInit {
   isLoginMode = true;
+  // isLoading = false;
   error: string;
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit(form: NgForm) {
     if (!form.valid) {
@@ -18,21 +21,25 @@ export class AuthComponent implements OnInit {
     }
     const email = form.value.email;
     const password = form.value.password;
+
+    let authObs: Observable<AuthResponseData>;
+
+    // this.isLoading = true;
     if (this.isLoginMode) {
-      // ...
+      authObs = this.authService.login(email, password);
     } else {
-      this.authService.signUp(email, password).subscribe(
-        (responseData) => {
-          console.log(responseData);
-        },
-        (errorRes) => {
-          switch (errorRes.error.error.message) {
-            case 'EMAIL_EXISTS':
-              this.error = 'This email already exists';
-          }
-        }
-      );
+      authObs = this.authService.signUp(email, password);
     }
+
+    authObs.subscribe(
+      (responseData) => {
+        this.router.navigate(['/shopping']);
+        // this.isLoading = false;
+      },
+      (errorMessage) => {
+        this.error = errorMessage;
+      }
+    );
     form.reset();
   }
 

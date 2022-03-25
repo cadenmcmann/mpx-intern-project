@@ -3,6 +3,9 @@
     <div class="alert alert-danger" *ngIf="error">
       <p>{{ error }}</p>
     </div>
+    <h2 class="display-2 text-center">
+      {{ isLoginMode ? "Login" : "Sign Up" }}
+    </h2>
     <form #authForm="ngForm" (ngSubmit)="onSubmit(authForm)">
       <div class="form-group">
         <label for="email">E-Mail</label>

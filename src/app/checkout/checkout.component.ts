@@ -6,23 +6,27 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-checkout',
   templateUrl: './checkout.component.html',
-  styleUrls: ['./checkout.component.css']
+  styleUrls: ['./checkout.component.css'],
 })
 export class CheckoutComponent implements OnInit {
-
   cartItems: ShoppingItem[] = [];
   cartItemsSubscription: Subscription;
 
-  constructor(private cartService: CartService) { }
+  constructor(private cartService: CartService) {}
 
   ngOnInit(): void {
-    this.cartItemsSubscription = this.cartService.cartInventoryChanged
-      .subscribe(
+    this.cartItemsSubscription =
+      this.cartService.cartInventoryChanged.subscribe(
         (cartItems: ShoppingItem[]) => {
           this.cartItems = cartItems;
         }
       );
     this.cartItems = this.cartService.getCartInventory();
+    if (localStorage.getItem('cartData')) {
+      this.cartService.setCartInventory(
+        JSON.parse(localStorage.getItem('cartData'))
+      );
+    }
   }
 
   ngOnDestroy() {
@@ -35,16 +39,20 @@ export class CheckoutComponent implements OnInit {
 
   checkout() {
     // calculation
-    let itemizedCosts = []
+    let itemizedCosts = [];
     let totalCost = 0;
 
     this.cartItems.forEach((item: ShoppingItem) => {
-      let tax = 1 + item.tax
-      let currItemCost = (item.price * item.quantity) * tax;
+      let tax = 1 + item.tax;
+      let currItemCost = item.price * item.quantity * tax;
       totalCost += currItemCost;
-      itemizedCosts.push({ name: item.name, quantity: item.quantity, cost: currItemCost })
-    })
+      itemizedCosts.push({
+        name: item.name,
+        quantity: item.quantity,
+        cost: currItemCost,
+      });
+    });
 
-    console.log(totalCost)
+    console.log(totalCost);
   }
 }
