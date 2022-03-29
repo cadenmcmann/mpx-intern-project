@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AngularFireDatabase,
   AngularFireList,
 } from '@angular/fire/compat/database';
 import { Observable, Subscription } from 'rxjs';
 import { AuthService } from './auth/auth.service';
+import { User } from './auth/user.model';
 import { ShoppingItem } from './shopping/shoppingItem.model';
 
 @Component({
@@ -13,15 +14,20 @@ import { ShoppingItem } from './shopping/shoppingItem.model';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'mpx-dev-shop';
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private http: HttpClient) {}
 
   ngOnInit() {
     this.authService.autoLogin();
   }
 
+  ngOnDestroy() {
+    localStorage.removeItem('cartData');
+    localStorage.removeItem('shoppingData');
+    localStorage.removeItem('userData');
+  }
   // postingItems: ShoppingItem[] = [
   //   new ShoppingItem(
   //     'Imported Vanilla-Hazelnut Coffee Bag',
@@ -34,13 +40,18 @@ export class AppComponent implements OnInit {
   //   ),
   // ];
 
+  // user1 = new User('test1', 'test1', 'test1', new Date(), []);
+  // user2 = new User('test2', 'test2', 'test2', new Date(), []);
+
+  // postingItems = [this.user1, this.user2];
+
   // handleWrite() {
   //   this.http
   //     .put(
-  //       'https://mpx-shop-default-rtdb.firebaseio.com/items/beverages.json',
+  //       'https://mpx-shop-default-rtdb.firebaseio.com/testUserList/test/userList.json?auth=AIzaSyAXT-2pUNxSUyRZW31VVBkLybVgGIeCpMc',
   //       this.postingItems
   //     )
-  //     .subscribe((res) => {
+  //     .subscribe((res: any) => {
   //       console.log(res);
   //     });
   // }

@@ -17,6 +17,7 @@ import { environment } from 'src/environments/environment';
 import { AuthComponent } from './auth/auth.component';
 import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component';
 import { AuthInterceptorService } from './auth/auth-interceptor.service';
+import { ReceiptModalComponent } from './checkout/receipt-modal/receipt-modal.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { AuthInterceptorService } from './auth/auth-interceptor.service';
     ShoppingItemCardComponent,
     AuthComponent,
     LoadingSpinnerComponent,
+    ReceiptModalComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
+import { User } from '../auth/user.model';
+import { UserService } from '../user.service';
+import { ShoppingItem } from './shoppingItem.model';
+import { getDatabase, ref, push, set } from 'firebase/database';
 
 @Component({
   selector: 'app-shopping',
@@ -21,18 +25,15 @@ export class ShoppingComponent implements OnInit {
   public alcoholIconLink =
     'https://cdn-icons-png.flaticon.com/512/920/920523.png';
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+    private userService: UserService
+  ) {}
 
   ngOnInit(): void {
-    // this.authService.user.subscribe((user) => {
-    //   this.userToken = user.token;
-    // });
-    // this.http
-    //   .get(
-    //     `https://mpx-shop-default-rtdb.firebaseio.com/items/food.json?auth=${this.userToken}`
-    //   )
-    //   .subscribe((res) => {
-    //     console.log(res);
-    //   });
+    this.authService.user.subscribe((user) => {
+      this.userToken = user.token;
+    });
   }
 }

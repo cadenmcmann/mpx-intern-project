@@ -10,6 +10,9 @@ import {
 } from 'rxjs';
 import { User } from './user.model';
 import { Router } from '@angular/router';
+import { UserService } from '../user.service';
+import { ShoppingItem } from '../shopping/shoppingItem.model';
+import { ShoppingItemsService } from '../shopping-items.service';
 
 export interface AuthResponseData {
   kind: string;
@@ -28,7 +31,11 @@ export class AuthService {
   user = new BehaviorSubject<User>(null);
   private tokenExpirationTimer: any;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private userService: UserService
+  ) {}
 
   signUp(email: string, password: string) {
     return this.http
@@ -47,7 +54,8 @@ export class AuthService {
             resData.email,
             resData.localId,
             resData.idToken,
-            +resData.expiresIn
+            +resData.expiresIn,
+            true
           );
         })
       );
@@ -56,7 +64,7 @@ export class AuthService {
   login(email: string, password: string) {
     return this.http
       .post<AuthResponseData>(
-        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaS yAXT-2pUNxSUyRZW31VVBkLybVgGIeCpMc',
+        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAXT-2pUNxSUyRZW31VVBkLybVgGIeCpMc',
         {
           email,
           password,
@@ -70,7 +78,8 @@ export class AuthService {
             resData.email,
             resData.localId,
             resData.idToken,
-            +resData.expiresIn
+            +resData.expiresIn,
+            false
           );
         })
       );
@@ -80,6 +89,9 @@ export class AuthService {
     this.user.next(null);
     this.router.navigate(['/auth']);
     localStorage.removeItem('userData');
+    localStorage.removeItem('cartData');
+    localStorage.removeItem('shoppingData');
+    // this.router.navigate(['/']);
     if (this.tokenExpirationTimer) {
       clearTimeout(this.tokenExpirationTimer);
     }
@@ -92,6 +104,7 @@ export class AuthService {
       id: string;
       _token: string;
       _tokenExpirationDate: string;
+      cartData: ShoppingItem[];
     } = JSON.parse(localStorage.getItem('userData'));
     if (!userData) {
       return;
@@ -101,7 +114,8 @@ export class AuthService {
       userData.email,
       userData.id,
       userData._token,
-      new Date(userData._tokenExpirationDate)
+      new Date(userData._tokenExpirationDate),
+      userData.cartData
     );
 
     if (loadedUser.token) {
@@ -138,16 +152,27 @@ export class AuthService {
     return throwError(errorMsg);
   }
 
-  private handleAuthentication(
+  private async handleAuthentication(
     email: string,
     userId: string,
     token: string,
-    expiresIn: number
+    expiresIn: number,
+    isSigningUp: boolean
   ) {
     const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
-    const user = new User(email, userId, token, expirationDate);
-    this.user.next(user);
+    let currentUser: User;
+    // if new user, call user service to store user data
+    if (isSigningUp) {
+      currentUser = new User(email, userId, token, expirationDate, []);
+      this.userService.postUserData(currentUser);
+    } else {
+      // if user already exists, get their cart data
+      let userCart: ShoppingItem[] = await this.userService.getUserCart(email);
+      currentUser = new User(email, userId, token, expirationDate, userCart);
+    }
+    // const user = new User(email, userId, token, expirationDate, []);
+    this.user.next(currentUser);
     this.autoLogout(expiresIn * 1000);
-    localStorage.setItem('userData', JSON.stringify(user));
+    localStorage.setItem('userData', JSON.stringify(currentUser));
   }
 }

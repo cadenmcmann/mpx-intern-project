@@ -1,0 +1,39 @@
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{ display: display }">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="col-12 text-center modal-title">Your Receipt</h5>
+      </div>
+      <div class="modal-body">
+        <ul>
+          <li *ngFor="let item of receiptItems">
+            {{ item.name }} ({{ item.quantity }}) - ${{ item.totalPrice }}
+            <ul>
+              <li>
+                Cost before tax: {{ item.quantity }} x {{ item.costPer }} = ${{
+                  item.standardPrice
+                }}
+              </li>
+              <li>Sales tax: ${{ item.salesTaxPrice }}</li>
+              <li>Import tax: ${{ item.importTaxPrice }}</li>
+            </ul>
+          </li>
+        </ul>
+        <hr />
+        <p>Cart Toal: ${{ totalCartCost }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="handlePurchase()"
+        >
+          Purchase
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

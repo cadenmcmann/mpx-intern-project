@@ -8,10 +8,15 @@ import { ShoppingItemsService } from './shopping-items.service';
 })
 export class CartService {
   cartInventoryChanged = new Subject<ShoppingItem[]>();
+  itemsPurchased = new Subject<boolean>();
 
   private cartInventory: ShoppingItem[] = [];
 
   constructor(private shoppingService: ShoppingItemsService) {}
+
+  purchaseItems(purchased: boolean) {
+    this.itemsPurchased.next(purchased);
+  }
 
   setCartInventory(cartInv: ShoppingItem[]) {
     this.cartInventory = cartInv;
@@ -84,8 +89,12 @@ export class CartService {
   }
 
   clearCart() {
+    this.cartInventory.forEach((item) => {
+      this.shoppingService.updateItemQuantity(item, -item.quantity);
+    });
     this.cartInventory = [];
     this.cartInventoryChanged.next(this.cartInventory.slice());
+    localStorage.removeItem('cartData');
   }
 
   // helper function
@@ -100,13 +109,13 @@ export class CartService {
   }
 
   // helper function
-  getItemQuantity(item: ShoppingItem) {
-    let qty = -1;
-    this.cartInventory.forEach((cartItem: ShoppingItem) => {
-      if (cartItem.name === item.name) {
-        qty = cartItem.quantity;
-      }
-    });
-    return qty;
-  }
+  // getItemQuantity(item: ShoppingItem) {
+  //   let qty = -1;
+  //   this.cartInventory.forEach((cartItem: ShoppingItem) => {
+  //     if (cartItem.name === item.name) {
+  //       qty = cartItem.quantity;
+  //     }
+  //   });
+  //   return qty;
+  // }
 }

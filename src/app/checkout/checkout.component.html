@@ -1,27 +1,41 @@
+<div class="alert alert-success text-center" role="alert" *ngIf="purchased">
+  Success! Your items have been purchased. Thanks for shopping at MPX Shop!
+</div>
 <div class="container">
   <div class="row">
     <div class="col-md-12">
       <h1 class="display-1 text-center">Your Cart</h1>
     </div>
   </div>
-  <hr>
+  <hr />
   <div class="row">
     <div class="col-md-6 pt-3" *ngFor="let item of cartItems">
-      <app-shopping-item-card [shoppingItem]="item" [cartMode]="true"></app-shopping-item-card>
+      <app-shopping-item-card
+        [shoppingItem]="item"
+        [cartMode]="true"
+      ></app-shopping-item-card>
     </div>
   </div>
-  <hr *ngIf="cartItems.length !== 0">
+  <hr *ngIf="cartItems.length !== 0" />
   <div class="row pb-5" *ngIf="cartItems.length !== 0">
     <div class="col-md-10 text-md-right">
       <button class="btn btn-danger" (click)="clearCart()">Clear Cart</button>
     </div>
     <div class="col-md-2 text-md-right">
-      <button class="btn btn-primary" (click)="checkout()">Checkout</button>
+      <button class="btn btn-primary" (click)="openModal()">Checkout</button>
     </div>
   </div>
   <div class="row" *ngIf="cartItems.length === 0">
     <div class="col-md text-center">
-      <h3>Looks like your cart is empty. Click the shopping tab to go buy some items!</h3>
+      <h3>
+        Looks like your cart is empty. Click the shopping tab to go buy some
+        items!
+      </h3>
     </div>
   </div>
+  <app-receipt-modal
+    [receiptItems]="receiptSummary"
+    [display]="display"
+    [totalCartCost]="totalCost"
+  ></app-receipt-modal>
 </div>

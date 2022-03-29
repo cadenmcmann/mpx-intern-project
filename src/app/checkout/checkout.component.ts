@@ -3,6 +3,16 @@ import { ShoppingItem } from '../shopping/shoppingItem.model';
 import { CartService } from '../cart.service';
 import { Subscription } from 'rxjs';
 
+export type ReceiptItem = {
+  name: string;
+  quantity: number;
+  standardPrice: number;
+  costPer: number;
+  totalPrice: number;
+  salesTaxPrice?: number;
+  importTaxPrice?: number;
+};
+
 @Component({
   selector: 'app-checkout',
   templateUrl: './checkout.component.html',
@@ -11,6 +21,9 @@ import { Subscription } from 'rxjs';
 export class CheckoutComponent implements OnInit {
   cartItems: ShoppingItem[] = [];
   cartItemsSubscription: Subscription;
+  receiptSummary: ReceiptItem[] = [];
+  totalCost = 0;
+  purchased = false;
 
   constructor(private cartService: CartService) {}
 
@@ -22,11 +35,21 @@ export class CheckoutComponent implements OnInit {
         }
       );
     this.cartItems = this.cartService.getCartInventory();
-    if (localStorage.getItem('cartData')) {
-      this.cartService.setCartInventory(
-        JSON.parse(localStorage.getItem('cartData'))
-      );
-    }
+    this.cartService.itemsPurchased.subscribe((purchased) => {
+      if (purchased) {
+        this.purchased = true;
+      }
+    });
+    this.checkout();
+  }
+
+  display = 'none';
+
+  openModal() {
+    this.display = 'block';
+  }
+  onCloseHandled() {
+    this.display = 'none';
   }
 
   ngOnDestroy() {
@@ -38,21 +61,61 @@ export class CheckoutComponent implements OnInit {
   }
 
   checkout() {
-    // calculation
-    let itemizedCosts = [];
-    let totalCost = 0;
-
     this.cartItems.forEach((item: ShoppingItem) => {
       let tax = 1 + item.tax;
       let currItemCost = item.price * item.quantity * tax;
-      totalCost += currItemCost;
-      itemizedCosts.push({
-        name: item.name,
-        quantity: item.quantity,
-        cost: currItemCost,
-      });
+      // this.totalCost += currItemCost;
+      this.totalCost = parseFloat((this.totalCost + currItemCost).toFixed(2));
+      this.receiptSummary = this.checkoutHelper(this.receiptSummary, item);
     });
+  }
 
-    console.log(totalCost);
+  private checkoutHelper(receiptCosts: ReceiptItem[], item: ShoppingItem) {
+    let receiptItem: ReceiptItem = {
+      name: item.name,
+      quantity: item.quantity,
+      standardPrice: item.price * item.quantity,
+      costPer: item.price,
+      totalPrice: 0,
+      salesTaxPrice: 0,
+      importTaxPrice: 0,
+    };
+
+    switch (item.tax) {
+      case 0.05:
+        receiptItem.importTaxPrice = this.taxHelper(
+          item.quantity * item.price * 0.05
+        );
+        break;
+      case 0.1:
+        receiptItem.salesTaxPrice = this.taxHelper(
+          item.quantity * item.price * 0.1
+        );
+        break;
+      case 0.15:
+        receiptItem.salesTaxPrice = this.taxHelper(
+          item.quantity * item.price * 0.1
+        );
+        receiptItem.importTaxPrice = this.taxHelper(
+          item.quantity * item.price * 0.05
+        );
+        break;
+    }
+
+    receiptItem.totalPrice = parseFloat(
+      (
+        receiptItem.standardPrice +
+        receiptItem.salesTaxPrice +
+        receiptItem.importTaxPrice
+      ).toFixed(2)
+    );
+
+    receiptCosts.push(receiptItem);
+    return receiptCosts;
+  }
+
+  // rounds tax numbers to the nearest 0.05
+  private taxHelper(cost: number): number {
+    return parseFloat((Math.ceil(cost * 20) / 20).toFixed(2));
   }
 }
