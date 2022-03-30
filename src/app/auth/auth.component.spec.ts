@@ -1,25 +1,60 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NgForm } from '@angular/forms';
+import { of } from 'rxjs';
 import { AuthComponent } from './auth.component';
 
 describe('AuthComponent', () => {
-  let component: AuthComponent;
-  let fixture: ComponentFixture<AuthComponent>;
+  let fixture: AuthComponent;
+  let authServiceMock: any;
+  let routerMock: any;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ AuthComponent ]
-    })
-    .compileComponents();
-  });
+  let testForm = <NgForm>{
+    value: {
+      email: 'email',
+      password: 'password',
+    },
+    valid: true,
+    reset: () => {},
+  };
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AuthComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    authServiceMock = {
+      login: jest.fn((email: string, password: string) => {
+        return of('test');
+      }),
+      signUp: jest.fn((email: string, password: string) => {
+        return of('test');
+      }),
+    };
+    routerMock = {
+      navigate: jest.fn(),
+    };
+
+    fixture = new AuthComponent(authServiceMock, routerMock);
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should switch from login to signup mode and vice versa', () => {
+    fixture.onSwitchMode();
+    expect(fixture.isLoginMode).toBeFalsy();
+    fixture.onSwitchMode();
+    expect(fixture.isLoginMode).toBeTruthy();
+  });
+
+  it('should call authService.signup with the right email and password', () => {
+    fixture.isLoginMode = false;
+    fixture.onSubmit(testForm);
+    expect(authServiceMock.signUp).toHaveBeenCalledWith(
+      testForm.value.email,
+      testForm.value.password
+    );
+  });
+
+  it('should call authService.login with the right email and password', () => {
+    fixture.isLoginMode = true;
+    fixture.onSubmit(testForm);
+    expect(authServiceMock.login).toHaveBeenCalledWith(
+      testForm.value.email,
+      testForm.value.password
+    );
   });
 });

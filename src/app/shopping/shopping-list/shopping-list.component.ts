@@ -1,28 +1,24 @@
-import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { AuthService } from 'src/app/auth/auth.service';
-import { ShoppingItemsService } from 'src/app/shopping-items.service';
+import { Component, OnInit } from '@angular/core';
 import { ShoppingItem } from '../shoppingItem.model';
+import { ShoppingItemsService } from '../../shared/shopping-items.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-shopping-list',
   templateUrl: './shopping-list.component.html',
-  styleUrls: ['./shopping-list.component.css'],
+  styleUrls: [],
 })
 export class ShoppingListComponent implements OnInit {
   public category: string;
   public items: ShoppingItem[] = [];
-  userToken: string;
 
   routeSubscription: Subscription;
   itemsSubscription: Subscription;
-  authSubscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
-    private shoppingItemsService: ShoppingItemsService,
-    private authService: AuthService
+    private shoppingItemsService: ShoppingItemsService
   ) {}
 
   ngOnInit(): void {
@@ -38,6 +34,6 @@ export class ShoppingListComponent implements OnInit {
 
   ngOnDestroy() {
     this.routeSubscription.unsubscribe();
-    // this.itemsSubscription.unsubscribe();
+    this.itemsSubscription.unsubscribe();
   }
 }

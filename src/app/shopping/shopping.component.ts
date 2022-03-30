@@ -1,15 +1,10 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../auth/auth.service';
-import { User } from '../auth/user.model';
-import { UserService } from '../user.service';
-import { ShoppingItem } from './shoppingItem.model';
-import { getDatabase, ref, push, set } from 'firebase/database';
+// import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-shopping',
   templateUrl: './shopping.component.html',
-  styleUrls: ['./shopping.component.css'],
+  styleUrls: [],
 })
 export class ShoppingComponent implements OnInit {
   userToken: string;
@@ -25,15 +20,12 @@ export class ShoppingComponent implements OnInit {
   public alcoholIconLink =
     'https://cdn-icons-png.flaticon.com/512/920/920523.png';
 
-  constructor(
-    private http: HttpClient,
-    private authService: AuthService,
-    private userService: UserService
-  ) {}
+  // constructor(private authService: AuthService) {}
+  constructor() {}
 
   ngOnInit(): void {
-    this.authService.user.subscribe((user) => {
-      this.userToken = user.token;
-    });
+    // this.authService.user.subscribe((user) => {
+    //   this.userToken = user.token;
+    // });
   }
 }

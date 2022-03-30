@@ -1,25 +1,37 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+// import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { of } from 'rxjs';
+import { User } from '../auth/user.model';
 import { HeaderComponent } from './header.component';
 
 describe('HeaderComponent', () => {
-  let component: HeaderComponent;
-  let fixture: ComponentFixture<HeaderComponent>;
+  let fixture: HeaderComponent;
+  let testUser: User;
+  let authServiceMock: any;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ HeaderComponent ]
-    })
-    .compileComponents();
+  beforeAll(() => {
+    testUser = new User('email', 'id', 'token', new Date());
+    authServiceMock = {
+      user: of(testUser),
+      logout: jest.fn(),
+    };
+    fixture = new HeaderComponent(authServiceMock);
   });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(HeaderComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+  it('should set isAuthenticated to true when authService emits a valid user', () => {
+    fixture.ngOnInit();
+    expect(fixture.isAuthenticated).toBeTruthy();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should set isAuthenticated to false when authService emits a null/invalid user', () => {
+    authServiceMock.user = of(null);
+    fixture.ngOnInit();
+    expect(fixture.isAuthenticated).toBeFalsy();
+  });
+
+  it('should call authService.logout when a user logs out', () => {
+    fixture.ngOnInit();
+    fixture.onLogout();
+    expect(authServiceMock.logout).toHaveBeenCalledTimes(1);
   });
 });

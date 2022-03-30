@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { CartService } from '../shared/cart.service';
 import { ShoppingItem } from '../shopping/shoppingItem.model';
-import { CartService } from '../cart.service';
 import { Subscription } from 'rxjs';
 
 export type ReceiptItem = {
@@ -16,7 +16,7 @@ export type ReceiptItem = {
 @Component({
   selector: 'app-checkout',
   templateUrl: './checkout.component.html',
-  styleUrls: ['./checkout.component.css'],
+  styleUrls: [],
 })
 export class CheckoutComponent implements OnInit {
   cartItems: ShoppingItem[] = [];
@@ -24,6 +24,7 @@ export class CheckoutComponent implements OnInit {
   receiptSummary: ReceiptItem[] = [];
   totalCost = 0;
   purchased = false;
+  display = 'none';
 
   constructor(private cartService: CartService) {}
 
@@ -42,8 +43,6 @@ export class CheckoutComponent implements OnInit {
     });
     this.checkout();
   }
-
-  display = 'none';
 
   openModal() {
     this.display = 'block';
@@ -64,7 +63,6 @@ export class CheckoutComponent implements OnInit {
     this.cartItems.forEach((item: ShoppingItem) => {
       let tax = 1 + item.tax;
       let currItemCost = item.price * item.quantity * tax;
-      // this.totalCost += currItemCost;
       this.totalCost = parseFloat((this.totalCost + currItemCost).toFixed(2));
       this.receiptSummary = this.checkoutHelper(this.receiptSummary, item);
     });

@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthComponent } from './auth/auth.component';
 import { AuthGuard } from './auth/auth.guard';
+import { AuthComponent } from './auth/auth.component';
 import { CheckoutComponent } from './checkout/checkout.component';
+import { NgModule } from '@angular/core';
 import { ShoppingListComponent } from './shopping/shopping-list/shopping-list.component';
 import { ShoppingComponent } from './shopping/shopping.component';
 

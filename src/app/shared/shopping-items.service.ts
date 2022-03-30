@@ -1,9 +1,8 @@
-import { Injectable } from '@angular/core';
-import { Observable, Subject, Subscription } from 'rxjs';
-import { ShoppingItem } from './shopping/shoppingItem.model';
-import { AngularFireDatabase } from '@angular/fire/compat/database';
-import { AuthService } from './auth/auth.service';
+import { Subject, Subscription } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { ShoppingItem } from '../shopping/shoppingItem.model';
 
 @Injectable({
   providedIn: 'root',
@@ -20,11 +19,7 @@ export class ShoppingItemsService {
   beveragesInventory: ShoppingItem[];
   alcoholInventory: ShoppingItem[];
 
-  constructor(
-    private db: AngularFireDatabase,
-    private authService: AuthService,
-    private http: HttpClient
-  ) {
+  constructor(private authService: AuthService, private http: HttpClient) {
     this.userSubscription = this.authService.user.subscribe((user) => {
       if (user === null) {
         this.inventory = [];
@@ -122,32 +117,5 @@ export class ShoppingItemsService {
         item.quantity -= quantity;
       }
     });
-
-    // switch (categoryList) {
-    //   case this.foodInventory:
-    //     localStorage.setItem(
-    //       'foodInventory',
-    //       JSON.stringify(this.foodInventory)
-    //     );
-    //     break;
-    //   case this.electronicsInventory:
-    //     localStorage.setItem(
-    //       'electronicsInventory',
-    //       JSON.stringify(this.electronicsInventory)
-    //     );
-    //     break;
-    //   case this.beveragesInventory:
-    //     localStorage.setItem(
-    //       'beveragesInventory',
-    //       JSON.stringify(this.beveragesInventory)
-    //     );
-    //     break;
-    //   case this.alcoholInventory:
-    //     localStorage.setItem(
-    //       'alcoholInventory',
-    //       JSON.stringify(this.alcoholInventory)
-    //     );
-    //     break;
-    // }
   }
 }

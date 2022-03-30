@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
 import { AuthResponseData, AuthService } from './auth.service';
+import { Component } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
-  styleUrls: ['./auth.component.css'],
+  styleUrls: [],
 })
-export class AuthComponent implements OnInit {
+export class AuthComponent {
   isLoginMode = true;
   // isLoading = false;
   error: string;
@@ -47,5 +47,5 @@ export class AuthComponent implements OnInit {
     this.isLoginMode = !this.isLoginMode;
   }
 
-  ngOnInit(): void {}
+  // ngOnInit(): void {}
 }

@@ -1,13 +1,13 @@
-import { Component, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+// import { CartService } from 'src/app/shared/cart.service';
+import { CartService } from '../../../shared/cart.service';
 import { ShoppingItem } from '../../shoppingItem.model';
-import { CartService } from 'src/app/cart.service';
-import { Subscription } from 'rxjs';
-import { ShoppingItemsService } from 'src/app/shopping-items.service';
+// import { ShoppingItemsService } from 'src/app/shared/shopping-items.service';
 
 @Component({
   selector: 'app-shopping-item-card',
   templateUrl: './shopping-item-card.component.html',
-  styleUrls: ['./shopping-item-card.component.css'],
+  styleUrls: [],
 })
 export class ShoppingItemCardComponent implements OnInit {
   @Input() shoppingItem: ShoppingItem;
@@ -15,8 +15,7 @@ export class ShoppingItemCardComponent implements OnInit {
   @Input() cartMode: boolean;
   selectedQuantity: number = 0;
   constructor(
-    private cartService: CartService,
-    private shoppingService: ShoppingItemsService
+    private cartService: CartService // private shoppingService: ShoppingItemsService
   ) {}
 
   /**

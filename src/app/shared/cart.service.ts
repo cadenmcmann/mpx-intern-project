@@ -1,6 +1,6 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { ShoppingItem } from './shopping/shoppingItem.model';
+import { ShoppingItem } from '../shopping/shoppingItem.model';
 import { ShoppingItemsService } from './shopping-items.service';
 
 @Injectable({
@@ -81,8 +81,6 @@ export class CartService {
     } else {
       this.setCartInventory(currentCart);
     }
-
-    localStorage.setItem('cartData', JSON.stringify(this.cartInventory));
 
     // Now, update shopping list
     this.shoppingService.updateItemQuantity(removedItem, -removedItem.quantity);

@@ -1,18 +1,11 @@
-import { Injectable } from '@angular/core';
+import { BehaviorSubject, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
-import {
-  BehaviorSubject,
-  Observable,
-  ObservableInput,
-  Subject,
-  throwError,
-} from 'rxjs';
-import { User } from './user.model';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserService } from '../user.service';
 import { ShoppingItem } from '../shopping/shoppingItem.model';
-import { ShoppingItemsService } from '../shopping-items.service';
+import { User } from './user.model';
+import { UserService } from '../shared/user.service';
 
 export interface AuthResponseData {
   kind: string;
@@ -91,7 +84,6 @@ export class AuthService {
     localStorage.removeItem('userData');
     localStorage.removeItem('cartData');
     localStorage.removeItem('shoppingData');
-    // this.router.navigate(['/']);
     if (this.tokenExpirationTimer) {
       clearTimeout(this.tokenExpirationTimer);
     }
@@ -114,8 +106,7 @@ export class AuthService {
       userData.email,
       userData.id,
       userData._token,
-      new Date(userData._tokenExpirationDate),
-      userData.cartData
+      new Date(userData._tokenExpirationDate)
     );
 
     if (loadedUser.token) {
@@ -163,14 +154,12 @@ export class AuthService {
     let currentUser: User;
     // if new user, call user service to store user data
     if (isSigningUp) {
-      currentUser = new User(email, userId, token, expirationDate, []);
+      currentUser = new User(email, userId, token, expirationDate);
       this.userService.postUserData(currentUser);
     } else {
       // if user already exists, get their cart data
-      let userCart: ShoppingItem[] = await this.userService.getUserCart(email);
-      currentUser = new User(email, userId, token, expirationDate, userCart);
+      currentUser = new User(email, userId, token, expirationDate);
     }
-    // const user = new User(email, userId, token, expirationDate, []);
     this.user.next(currentUser);
     this.autoLogout(expiresIn * 1000);
     localStorage.setItem('userData', JSON.stringify(currentUser));

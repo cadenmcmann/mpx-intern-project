@@ -1,6 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { CartService } from 'src/app/cart.service';
-import { ShoppingItem } from 'src/app/shopping/shoppingItem.model';
+import { Component, Input } from '@angular/core';
+import { CartService } from '../../shared/cart.service';
 import { ReceiptItem } from '../checkout.component';
 
 @Component({
@@ -8,7 +7,7 @@ import { ReceiptItem } from '../checkout.component';
   templateUrl: './receipt-modal.component.html',
   styleUrls: ['./receipt-modal.component.css'],
 })
-export class ReceiptModalComponent implements OnInit {
+export class ReceiptModalComponent {
   @Input() receiptItems: ReceiptItem[];
   @Input() display: string;
   @Input() totalCartCost: number;
@@ -25,5 +24,5 @@ export class ReceiptModalComponent implements OnInit {
 
   constructor(private cartService: CartService) {}
 
-  ngOnInit(): void {}
+  // ngOnInit(): void {}
 }
