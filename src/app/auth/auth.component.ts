@@ -11,9 +11,8 @@ import { Router } from '@angular/router';
 })
 export class AuthComponent {
   isLoginMode = true;
-  // isLoading = false;
   error: string;
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
   onSubmit(form: NgForm) {
     if (!form.valid) {
@@ -24,7 +23,6 @@ export class AuthComponent {
 
     let authObs: Observable<AuthResponseData>;
 
-    // this.isLoading = true;
     if (this.isLoginMode) {
       authObs = this.authService.login(email, password);
     } else {
@@ -34,7 +32,6 @@ export class AuthComponent {
     authObs.subscribe(
       (responseData) => {
         this.router.navigate(['/shopping']);
-        // this.isLoading = false;
       },
       (errorMessage) => {
         this.error = errorMessage;
@@ -47,5 +44,4 @@ export class AuthComponent {
     this.isLoginMode = !this.isLoginMode;
   }
 
-  // ngOnInit(): void {}
 }

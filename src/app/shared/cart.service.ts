@@ -12,7 +12,7 @@ export class CartService {
 
   private cartInventory: ShoppingItem[] = [];
 
-  constructor(private shoppingService: ShoppingItemsService) {}
+  constructor(private shoppingService: ShoppingItemsService) { }
 
   purchaseItems(purchased: boolean) {
     this.itemsPurchased.next(purchased);
@@ -105,15 +105,4 @@ export class CartService {
     });
     return itemFound;
   }
-
-  // helper function
-  // getItemQuantity(item: ShoppingItem) {
-  //   let qty = -1;
-  //   this.cartInventory.forEach((cartItem: ShoppingItem) => {
-  //     if (cartItem.name === item.name) {
-  //       qty = cartItem.quantity;
-  //     }
-  //   });
-  //   return qty;
-  // }
 }
