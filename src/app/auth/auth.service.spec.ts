@@ -1,10 +1,10 @@
 import { AuthService } from './auth.service';
+import { User } from './user.model';
 
 describe('AuthService', () => {
   let fixture: AuthService;
   let httpMock: any;
   let routerMock: any;
-  let userServiceMock: any;
   const signUpUrl =
     'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAXT-2pUNxSUyRZW31VVBkLybVgGIeCpMc';
 
@@ -23,13 +23,10 @@ describe('AuthService', () => {
         pipe: jest.fn(),
       })),
     };
-    userServiceMock = {
-      postUserData: jest.fn(),
-    };
     routerMock = {
       navigate: jest.fn(),
     };
-    fixture = new AuthService(httpMock, routerMock, userServiceMock);
+    fixture = new AuthService(httpMock, routerMock);
   });
 
   it('should call http.post on user signup correct url', () => {
@@ -44,5 +41,24 @@ describe('AuthService', () => {
     expect(httpMock.post).toHaveBeenCalledWith(loginUrl, httpUserParams);
 
     expect(httpMock.post).toHaveBeenCalledTimes(1);
+  });
+
+  it('should emit a null user and clear local storage data on logout', () => {
+    fixture.logout();
+    expect(localStorage.getItem('userData')).toBeNull();
+    expect(localStorage.getItem('cartData')).toBeNull();
+    expect(localStorage.getItem('shoppingData')).toBeNull();
+    fixture.user.subscribe((user) => {
+      expect(user).toBeNull();
+    });
+  });
+
+  it('should auto login a user that has a valid token', () => {
+    let testUser = new User('test', 'id', 'token', new Date());
+    localStorage.setItem('userData', JSON.stringify(testUser));
+    fixture.autoLogin();
+    fixture.user.subscribe((user) => {
+      expect(user).toEqual(testUser);
+    });
   });
 });

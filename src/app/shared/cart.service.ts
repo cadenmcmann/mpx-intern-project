@@ -10,9 +10,9 @@ export class CartService {
   cartInventoryChanged = new Subject<ShoppingItem[]>();
   itemsPurchased = new Subject<boolean>();
 
-  private cartInventory: ShoppingItem[] = [];
+  cartInventory: ShoppingItem[] = [];
 
-  constructor(private shoppingService: ShoppingItemsService) { }
+  constructor(private shoppingService: ShoppingItemsService) {}
 
   purchaseItems(purchased: boolean) {
     this.itemsPurchased.next(purchased);

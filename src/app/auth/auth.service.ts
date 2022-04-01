@@ -5,7 +5,6 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ShoppingItem } from '../shopping/shoppingItem.model';
 import { User } from './user.model';
-import { UserService } from '../shared/user.service';
 
 export interface AuthResponseData {
   kind: string;
@@ -24,11 +23,7 @@ export class AuthService {
   user = new BehaviorSubject<User>(null);
   private tokenExpirationTimer: any;
 
-  constructor(
-    private http: HttpClient,
-    private router: Router,
-    private userService: UserService
-  ) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   signUp(email: string, password: string) {
     return this.http
@@ -155,7 +150,6 @@ export class AuthService {
     // if new user, call user service to store user data
     if (isSigningUp) {
       currentUser = new User(email, userId, token, expirationDate);
-      this.userService.postUserData(currentUser);
     } else {
       // if user already exists, get their cart data
       currentUser = new User(email, userId, token, expirationDate);

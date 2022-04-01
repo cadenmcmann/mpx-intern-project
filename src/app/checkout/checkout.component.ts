@@ -26,7 +26,7 @@ export class CheckoutComponent implements OnInit {
   purchased = false;
   display = 'none';
 
-  constructor(private cartService: CartService) {}
+  constructor(private cartService: CartService) { }
 
   ngOnInit(): void {
     this.cartItemsSubscription =
@@ -72,7 +72,7 @@ export class CheckoutComponent implements OnInit {
     let receiptItem: ReceiptItem = {
       name: item.name,
       quantity: item.quantity,
-      standardPrice: item.price * item.quantity,
+      standardPrice: parseFloat((item.price * item.quantity).toFixed(2)),
       costPer: item.price,
       totalPrice: 0,
       salesTaxPrice: 0,

@@ -1,5 +1,5 @@
 <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{ display: display }">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog-scrollable modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="col-12 text-center modal-title">Your Receipt</h5>
@@ -10,12 +10,13 @@
             {{ item.name }} ({{ item.quantity }}) - ${{ item.totalPrice }}
             <ul>
               <li>
-                Cost before tax: {{ item.quantity }} x {{ item.costPer }} = ${{
-                  item.standardPrice
+                <strong>Cost before tax:</strong> {{ item.quantity }} x ${{
+                  item.costPer
                 }}
+                = ${{ item.standardPrice }}
               </li>
-              <li>Sales tax: ${{ item.salesTaxPrice }}</li>
-              <li>Import tax: ${{ item.importTaxPrice }}</li>
+              <li><strong>Sales tax:</strong> ${{ item.salesTaxPrice }}</li>
+              <li><strong>Import tax:</strong> ${{ item.importTaxPrice }}</li>
             </ul>
           </li>
         </ul>
